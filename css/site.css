@@ -55,3 +55,7 @@ body.is-fullscreen #canvas-container {
   margin: 0; /* Remove any default margins */
   z-index: 1000; /* Ensure it's above other content */
 }
+
+body{
+  background-color:bisque;
+}
