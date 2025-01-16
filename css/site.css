@@ -56,6 +56,3 @@ body.is-fullscreen #canvas-container {
   z-index: 1000; /* Ensure it's above other content */
 }
 
-body{
-  background-color:bisque;
-}
