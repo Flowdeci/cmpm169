@@ -18,3 +18,7 @@
 .two-column>*:nth-child(2) {
   flex: 1;
 }
+
+body{
+  background-color:bisque;
+}
