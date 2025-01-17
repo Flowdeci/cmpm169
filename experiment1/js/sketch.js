@@ -71,6 +71,8 @@ function draw() {
   textStyle(BOLD);
   textSize(140);
   text("p5*", centerHorz - 105, centerVert + 40);
+
+  
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
