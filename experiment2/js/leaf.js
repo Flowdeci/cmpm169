@@ -3,7 +3,7 @@
 // Date:1/17/2024
 
 class Leaf {
-  constructor(x, y, size) {
+  constructor(x, y, size, leafImage=mapleLeaf) {
     this.x = x;
     this.y = y;
     this.size = size;
@@ -11,6 +11,7 @@ class Leaf {
     this.rotation = 0;
     this.rotationSpeed = random(0.01, 0.05); // Speed of rotation
 
+    this.leafImage=leafImage;
     // Add velocities for wind and gravity
     this.vx = random(-1, 1); // Horizontal velocity (wind)
     this.vy = this.speed;    // Vertical velocity (falling down)
@@ -29,8 +30,8 @@ class Leaf {
     }
 
     // Apply some drag to prevent infinite acceleration
-    this.vx *= 0.99; // Horizontal drag (reduces speed over time)
-    this.vy *= 0.99; // Vertical drag
+    this.vx *= 0.99; // Horizontal drag (air friction)
+    this.vy *= 0.99; // Vertical drag (air friction)
 
     // Update the leaf's position based on its velocity
     this.x += this.vx;
@@ -50,15 +51,17 @@ class Leaf {
       this.x = 0;
     } else if (this.x < 0) {
       this.x = width;
+    }else if (this.y < -height) {
+      this.y+=100;
     }
   }
 
-  display() {
+  display() {//keep redrawing the leaves
     push();
     translate(this.x, this.y);
     rotate(this.rotation);
     imageMode(CENTER);
-    image(mapleLeaf, 0, 0, this.size, this.size);
+    image(this.leafImage, 0, 0, this.size, this.size);
     pop();
   }
 }
