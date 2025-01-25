@@ -57,6 +57,7 @@ function setup() {
   }
 
   globalWindForce = createVector(windX, windY);
+  console.log("p5 version:", p5.prototype ? p5.prototype.VERSION : "p5 not loaded");
 }
 
 function draw() {
