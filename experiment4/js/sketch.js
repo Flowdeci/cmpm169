@@ -52,7 +52,6 @@ function setup() {
   });
   resizeScreen();
 
-
   SOIL_TOP = height * 0.8
 
   //Start the day night cycle
@@ -98,7 +97,7 @@ function draw() {
         if (particle.touchesPlant(plant)) {
           console.log("watering plant");
           plant.water()
-          plant.stemGrowthRate +=0.01//speed up the plants growth rate
+          plant.stemGrowthRate += 0.01//speed up the plants growth rate
 
           if (plant.stemHeight >= plant.maxStemHeight) {
             plant.maxStemHeight += random(5, 10);//incerawse the maxiumum growth height if the plant is at
@@ -166,9 +165,9 @@ function keyReleased() {
 // update the  windForce based on key presses and gradual reset
 function updateWindForce() {
   //acumulate the wind force
-  if (isHoldingLeft && currentMode=='wind') {
+  if (isHoldingLeft && currentMode == 'wind') {
     windForce -= windAcceleration;
-  } else if (isHoldingRight && currentMode=='wind') {
+  } else if (isHoldingRight && currentMode == 'wind') {
     windForce += windAcceleration;
   } else {
     // if no keys are pressed decrease the wind force

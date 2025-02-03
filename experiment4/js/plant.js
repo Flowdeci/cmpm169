@@ -78,13 +78,13 @@ class Plant {
             let blossomY = this.y - this.stemHeight;
             ellipse(blossomX, blossomY, this.blossomSize); // Draw blossom
 
-            // Draw leaves around the blossom (only if the blossom is open)
+            // draw leaves around the blossom only when its open
             if (this.isBlossomOpen) {
                 for (let i = 0; i < this.leafCount; i++) {
                     // Calculate the angle for each leaf
                     let angle = (TWO_PI / this.leafCount) * i;
 
-                    // Calculate the base position of the leaf (attachment point on the blossom's edge)
+                    // find the base position of each leaf
                     let leafBaseX = blossomX + cos(angle) * (this.blossomSize / 2);
                     let leafBaseY = blossomY + sin(angle) * (this.blossomSize / 2);
 
