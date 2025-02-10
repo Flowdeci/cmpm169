@@ -32,6 +32,8 @@ function keyPressed() {
     }
 }
 
+
+
 class cube {
     constructor(x, y) {
         this.x = x;
@@ -39,7 +41,7 @@ class cube {
 
     }
 
-    display(x, y, size = cubeSize, rX=rotationX, rY=rotationY) {
+    display(x, y, size = cubeSize, rX = rotationX, rY = rotationY) {
         //Translate cube before rotation
         translate(x, y);
         // Rotate the cube
@@ -48,13 +50,18 @@ class cube {
 
 
         noStroke();
-        console.log("Cube RotationX:", rX, "Cube RotationY:", rY);
-
-
+        //console.log("Cube RotationX:", rX, "Cube RotationY:", rY);
 
         // Size of the cube
         this.makeCube(size);
 
+    }
+
+    cubeColorChange() {
+        //change all the colors of the faces
+        for (let i = 0; i < 6; i++) {
+            faceColors[i] = [random(255), random(255), random(255)];
+        }
     }
 
     makeCube(s) {

@@ -58,11 +58,12 @@ function setup() {  // Place our canvas, making it fit our container
   handPose.detectStart(video, gotHands);
 
   cube1 = new cube(0, 0);
+  this.canChangeColors = true;
 }
 
 function draw() {
   //background(220);
-  
+
 
   push();
   //move to top Left corner
@@ -83,6 +84,12 @@ function draw() {
     handleCubeRotation();
     //console.log(cubeRotationX);
 
+    if (changeColors() < 90 && this.canChangeColors==true) {
+      cube1.cubeColorChange();
+      this.canChangeColors=false;
+    }else if(changeColors() > 90 && this.canChangeColors==false){
+      this.canChangeColors=true;
+    }
 
     cube1.display(cubePlace.x, cubePlace.y, cubeHandSize(), cubeRotationX, cubeRotationY);
   } else {
@@ -178,7 +185,7 @@ function getHandDepth() {
   return depth;
 }
 
-let prevHandPosition = { x: 0, y: 0 }; 
+let prevHandPosition = { x: 0, y: 0 };
 
 function handleCubeRotation() {
   if (hands.length > 0) {
@@ -194,5 +201,17 @@ function handleCubeRotation() {
 
     // save previous hand position
     prevHandPosition = handCenter;
+  }
+}
+
+function changeColors() {
+  if (hands.length > 0) {
+    let hand = hands[0];
+
+    let middle = hand.middle_finger_tip;
+    let wrist = hand.wrist;
+
+    let d = dist(middle.x, middle.y, wrist.x, wrist.y);
+    return d;
   }
 }
