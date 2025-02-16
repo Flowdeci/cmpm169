@@ -8,6 +8,14 @@ let centerHorz, centerVert;
 let video;
 let handPose;
 let hands = [];
+let lastDetectedTime = 0;
+let cooldownDuration = 1000;
+let inputText = "";
+let fontSize = 200;
+let particles = []; // Store particles
+let TEAM_COLORS;
+let font;
+let textPoints = [];
 
 const positions = [
   "wrist",
@@ -49,6 +57,14 @@ function preload() {
     detectorModelUrl: undefined, //default to use the tf.hub model
     landmarkModelUrl: undefined, //default to use the tf.hub model
   });
+
+  TEAM_COLORS = [
+    color(0, 51, 153), // Blue
+    color(189, 32, 49), // Red
+  ];
+
+  // Load font
+  font = loadFont('assets/SMESH.ttf');
 }
 
 // Callback function for when handPose outputs data
@@ -92,6 +108,13 @@ function draw() {
     getLetter();
 
   }
+
+  for (let particle of particles) {
+    particle.checkScatter(); // Check for mouse scattering
+    particle.behavior(); // Attract to target
+    particle.move(); // Move particle
+    particle.display(); // Display particle
+  }
 }
 
 
@@ -109,7 +132,6 @@ function drawHandKeypoints() {
     }
   }
 }
-
 
 function preprocessKeypoints(hand) {
   if (!hand.keypoints3D) {
@@ -134,6 +156,12 @@ function preprocessKeypoints(hand) {
 
 function getLetter() {
   if (hands.length > 0) {
+
+    let currentTime = millis();
+    if (currentTime - lastDetectedTime < cooldownDuration) {
+      return;
+    }
+
     let hand = hands[0];
     let keypoints = preprocessKeypoints(hand);
 
@@ -169,6 +197,11 @@ function getLetter() {
       dist(indextip.x, indextip.y, wrist.x, wrist.y) < 100 &&
       dist(thumbtip.x, thumbtip.y, indexpip.x, indexpip.y) < 40
     ) {
+      inputText += "A";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
+
       console.log("Sign language A");
     } else if (//four fingers extended all the way
       dist(indextip.x, indextip.y, wrist.x, wrist.y) > 100 &&
@@ -178,6 +211,10 @@ function getLetter() {
       //and thumb shoudl be near index base
       dist(thumbtip.x, thumbtip.y, pinkymcp.x, pinkymcp.y) < 25
     ) {
+      inputText += "B";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign lanagnauge B");
     } else if (
       // Thumb and index finger tips are far apart (forming an open curve)
@@ -195,6 +232,10 @@ function getLetter() {
       thumbtip.y < thumbmcp.y &&
       indextip.y < indexmcp.y
     ) {
+      inputText += "C";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language C");
     } else if (
       //index finger pointed up
@@ -206,6 +247,10 @@ function getLetter() {
       dist(middletip.x, middletip.y, ringtip.x, ringtip.y) < 50 &&
       dist(ringtip.x, ringtip.y, pinkytip.x, pinkytip.y) < 50
     ) {
+      inputText += "D";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language D");
     } else if (
       // Thumb tip close to pinky tip
@@ -220,6 +265,10 @@ function getLetter() {
       dist(middletip.x, ringtip.x) < 30 &&
       dist(ringtip.x, pinkytip.x) < 30
     ) {
+      inputText += "E";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language E");
     } else if (
       // Thumb and index finger form a circle
@@ -233,6 +282,10 @@ function getLetter() {
       ringtip.y < ringmcp.y &&
       pinkytip.y < pinkymcp.y
     ) {
+      inputText += "F";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language F");
     } else if (
       // Thumb and index finger extended sideways
@@ -251,6 +304,10 @@ function getLetter() {
       //index above wrist
       indextip.y < wrist.y
     ) {
+      inputText += "G";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language G");
     } else if (
       // Index and middle fingers are extended
@@ -267,6 +324,10 @@ function getLetter() {
       middledip.y < wrist.y
 
     ) {
+      inputText += "H";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language H");
     } else if (
       // Pinky finger extended
@@ -284,6 +345,10 @@ function getLetter() {
       pinkytip.y < wrist.y - 40
       //
     ) {
+      inputText += "I";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language I");
     } else if (
       // Pinky finger extended
@@ -300,6 +365,10 @@ function getLetter() {
       // Sideways orientation (pinky is to the right of the wrist)
       pinkytip.x > wrist.x
     ) {
+      inputText += "J";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language J");
     } else if (
       // Index and middle fingers extended
@@ -314,6 +383,10 @@ function getLetter() {
       ringtip.y > ringmcp.y &&
       pinkytip.y > pinkymcp.y
     ) {
+      inputText += "K";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language K");
     } else if (
       // Index finger extended upward
@@ -328,6 +401,10 @@ function getLetter() {
       dist(middletip.x, middletip.y, ringtip.x, ringtip.y) < 40 &&
       dist(ringtip.x, ringtip.y, pinkytip.x, pinkytip.y) < 40
     ) {
+      inputText += "L";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language L");
     } else if (
       // Index, middle, and ring fingers folded over the thumb
@@ -342,6 +419,10 @@ function getLetter() {
       thumbtip.y > middletip.y &&
       thumbtip.y > ringtip.y
     ) {
+      inputText += "M";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language M");
     } else if (
       // Index and middle fingers folded over the thumb
@@ -355,6 +436,10 @@ function getLetter() {
       thumbtip.y > indextip.y &&
       thumbtip.y > middletip.y
     ) {
+      inputText += "N";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language N");
     } else if (
       // Thumb and index finger tips are very close
@@ -378,6 +463,10 @@ function getLetter() {
       thumbtip.y < ringtip.y &&
       thumbtip.y < pinkytip.y
     ) {
+      inputText += "O";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language O");
     } else if (
       // Index finger far from the wrist
@@ -391,6 +480,10 @@ function getLetter() {
       dist(ringtip.x, ringtip.y, thumbcmc.x, thumbcmc.y) < 50 &&
       dist(pinkytip.x, pinkytip.y, thumbcmc.x, thumbcmc.y) < 50
     ) {
+      inputText += "P";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language P");
     } else if (
       // Index finger and thumb pointing downward
@@ -403,6 +496,10 @@ function getLetter() {
       dist(ringtip.x, ringtip.y, thumbcmc.x, thumbcmc.y) < 50 &&
       dist(pinkytip.x, pinkytip.y, thumbcmc.x, thumbcmc.y) < 50
     ) {
+      inputText += "Q";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language Q");
     } else if (
       // Index and middle fingers are extended upward
@@ -411,19 +508,21 @@ function getLetter() {
       // Index and middle fingers are crossed
       dist(indextip.x, indextip.y, middletip.x, middletip.y) < 40 &&
       // Ring and pinky fingers are folded close to the wrist
-      dist(ringtip.x, ringtip.y, wrist.x, wrist.y) < 60 &&
-      dist(pinkytip.x, pinkytip.y, wrist.x, wrist.y) < 60 &&
+      dist(ringtip.x, ringtip.y, thumbcmc.x, thumbcmc.y) < 90 &&
+      dist(pinkytip.x, pinkytip.y, thumbcmc.x, thumbcmc.y) < 90 &&
       // Thumb is folded inward near the base of the index and middle fingers
-      dist(thumbtip.x, thumbtip.y, indexmcp.x, indexmcp.y) < 50 &&
-      dist(thumbtip.x, thumbtip.y, middlemcp.x, middlemcp.y) < 50
+      dist(thumbtip.x, thumbtip.y, indexmcp.x, indexmcp.y) < 60 &&
+      dist(thumbtip.x, thumbtip.y, middlemcp.x, middlemcp.y) < 60
     ) {
+      inputText += "R";
+      //generateText for particles
+      generateTextPoints(inputText);
+      createParticles();
       console.log("Sign language R");
-    }else{
-      console.log(
-        dist(indextip.x, indextip.y, middletip.x, middletip.y) < 40
-      )
     }
 
+    
+    lastDetectedTime = currentTime;
 
 
 
@@ -434,25 +533,68 @@ function getLetter() {
 }
 
 
-function getHandOrientation(keypoints) {
-  let minX = Infinity, maxX = -Infinity;
-  let minY = Infinity, maxY = -Infinity;
+function generateTextPoints(text) {
+  textPoints = []; // Clear existing points
+  let xOffset = 50; // Spacing from the left edge
+  let yOffset = fontSize; // Start slightly below the top edge
+  let lineHeight = fontSize + 20; // Vertical spacing between lines
 
-  // Loop through all keypoints to find the bounding box
-  for (let i = 0; i < keypoints.length; i++) {
-    const point = keypoints[i];
-    if (point.x < minX) minX = point.x;
-    if (point.x > maxX) maxX = point.x;
-    if (point.y < minY) minY = point.y;
-    if (point.y > maxY) maxY = point.y;
+  for (let i = 0; i < text.length; i++) {
+    let letter = text[i];
+    let letterWidth = font.textBounds(letter, 0, 0, fontSize).w;
+
+    // Check if the letter would exceed the canvas width
+    if (xOffset + letterWidth > width) {
+      xOffset = 50; // Move to the start of the next line
+      yOffset += lineHeight; // Move down by one line
+    }
+
+    // Generate points for the letter
+    let points = font.textToPoints(
+      letter,
+      xOffset,
+      yOffset,
+      fontSize,
+      { sampleFactor: 0.2 } // Density of points
+    );
+
+    // Add points for this letter
+    textPoints = textPoints.concat(points);
+
+    // Update xOffset for the next letter
+    xOffset += letterWidth + 50; // Add letter width and spacing
   }
-
-  const width = maxX - minX;
-  const height = maxY - minY;
-
-  // Return orientation based on aspect ratio
-  return width > height ? "forward" : "sideways";
 }
+
+// Create particles for each point in the letter
+function createParticles() {
+  particles = []; // Clear existing particles
+  for (let pt of textPoints) {
+    particles.push(new Particle(random(width), random(height), pt.x, pt.y));
+  }
+}
+
+// Change the letter when a key is pressed
+function keyPressed() {
+  if (key.length === 1) {
+    inputText += key.toUpperCase(); // Add the pressed key to the text
+    generateTextPoints(inputText); // Generate new points
+    createParticles(); // Recreate particles
+  } else if (keyCode === BACKSPACE || keyCode === DELETE) {
+    inputText = inputText.slice(0, -1); // Remove the last character
+    generateTextPoints(inputText); // Generate new points
+    createParticles(); // Recreate particles
+  } else if (keyCode === UP_ARROW) {
+    fontSize = constrain(fontSize + 10, 50, 500); // Increase font size, max 500
+    generateTextPoints(inputText);
+    createParticles();
+  } else if (keyCode === DOWN_ARROW) {
+    fontSize = constrain(fontSize - 10, 50, 500); // Decrease font size, min 50
+    generateTextPoints(inputText);
+    createParticles();
+  }
+}
+
 
 
 function mousePressed() {
