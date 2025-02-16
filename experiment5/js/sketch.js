@@ -84,11 +84,13 @@ function draw() {
     handleCubeRotation();
     //console.log(cubeRotationX);
 
-    if (changeColors() < 90 && this.canChangeColors==true) {
+    getLetter();
+
+    if (changeColors() < 90 && this.canChangeColors == true) {
       cube1.cubeColorChange();
-      this.canChangeColors=false;
-    }else if(changeColors() > 90 && this.canChangeColors==false){
-      this.canChangeColors=true;
+      this.canChangeColors = false;
+    } else if (changeColors() > 90 && this.canChangeColors == false) {
+      this.canChangeColors = true;
     }
 
     cube1.display(cubePlace.x, cubePlace.y, cubeHandSize(), cubeRotationX, cubeRotationY);
@@ -99,9 +101,7 @@ function draw() {
 
 }
 
-function mousePressed() {
-  console.log(hands)
-}
+
 
 function drawHandKeypoints() {
   if (hands.length > 0) {
@@ -214,4 +214,57 @@ function changeColors() {
     let d = dist(middle.x, middle.y, wrist.x, wrist.y);
     return d;
   }
+}
+
+function getLetter() {
+  if (hands.length) {
+    let hand = hands[0];
+    let wrist = hand.wrist;
+    let thumb = hand.thumb_tip;
+    let index = hand.index_finger_tip;
+    let middle = hand.middle_finger_tip;
+    let ring = hand.ring_finger_tip;
+    let pinky = hand.pinky_finger_tip;
+
+    //Letter A
+    if (//all four fingers need to be close to the wrist
+      (dist(pinky.x, pinky.y, wrist.x, wrist.y) < 50) &&
+      (dist(ring.x, ring.y, wrist.x, wrist.y) < 50) &&
+      (dist(middle.x, middle.y, wrist.x, wrist.y) < 50) &&
+      (dist(index.x, index.y, wrist.x, wrist.y) < 75) &&//index a lil bigger since its so far
+      (dist(thumb.x, thumb.y, hand.index_finger_pip.x, hand.index_finger_pip.y) < 20)//the thumb should be right next to the index finger pip
+    ) {
+      console.log("Sign language A");
+    } else if (
+      //first four fingers above thumb and wrist
+      (pinky.y > wrist.y && pinky.y > thumb.y) &&
+      (ring.y > wrist.y && ring.y > thumb.y) &&
+      (middle.y > wrist.y && middle.y > thumb.y) &&
+      (index.y > wrist.y && index.y > thumb.y) &&
+      //thumb above wirst
+      (thumb.y > wrist.y)
+      //thumb should be touching bottom pinky, four fingers touching up top
+    ) {
+      console.log("Sign langauge B")
+    }
+  }
+}
+
+function mousePressed() {
+  let hand = hands[0];
+  let wrist = hand.wrist;
+  let thumb = hand.thumb_tip;
+  let index = hand.index_finger_tip;
+  let middle = hand.middle_finger_tip;
+  let ring = hand.ring_finger_tip;
+  let pinky = hand.pinky_finger_tip;
+
+  console.log(pinky.y > wrist.y && pinky.y > thumb.y)
+
+  // console.log(dist(pinky.x, pinky.y, wrist.x, wrist.y))
+  // console.log(dist(ring.x, ring.y, wrist.x, wrist.y))
+  // console.log(dist(middle.x, middle.y, wrist.x, wrist.y))
+  // console.log(dist(index.x, index.y, wrist.x, wrist.y))
+  // console.log(dist(thumb.x, thumb.y, hand.index_finger_pip.x, hand.index_finger_pip.y))
+
 }
